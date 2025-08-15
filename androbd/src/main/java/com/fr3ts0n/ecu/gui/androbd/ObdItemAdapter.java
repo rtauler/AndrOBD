@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -226,7 +227,7 @@ class ObdItemAdapter extends ArrayAdapter<Object>
         
         TextView tvValue = view.findViewById(getResourceId("obd_value" + suffix, "id"));
         TextView tvUnits = view.findViewById(getResourceId("obd_units" + suffix, "id"));
-        ProgressBar pb = view.findViewById(getResourceId("bar" + suffix, "id"));
+        LinearLayout rectangleIndicator = view.findViewById(getResourceId("rectangle_indicator" + suffix, "id"));
 
         // format value string
         String fmtText;
@@ -257,17 +258,16 @@ class ObdItemAdapter extends ArrayAdapter<Object>
                 fmtText = String.valueOf(colVal);
             }
 
-            // set progress bar only on numeric values with min/max limits
+            // set rectangle indicator only on numeric values with min/max limits
             if (min != null
                     && max != null
                     && colVal instanceof Number)
             {
-                pb.setVisibility(ProgressBar.VISIBLE);
-                pb.getProgressDrawable().setColorFilter(pidColor, PorterDuff.Mode.SRC_IN);
-                pb.setProgress((int) (100 * ((((Number) colVal).doubleValue() - min.doubleValue()) / (max.doubleValue() - min.doubleValue()))));
+                rectangleIndicator.setVisibility(View.VISIBLE);
+                updateRectangleIndicator(rectangleIndicator, (Number) colVal, min, max);
             } else
             {
-                pb.setVisibility(ProgressBar.GONE);
+                rectangleIndicator.setVisibility(View.GONE);
             }
 
         } catch (Exception ex)
@@ -280,6 +280,25 @@ class ObdItemAdapter extends ArrayAdapter<Object>
         tvUnits.setText(pv.getUnits());
     }
 
+    private void updateRectangleIndicator(LinearLayout indicator, Number value, Number min, Number max)
+    {
+        // Calculate how many rectangles should be filled (0-10)
+        double normalizedValue = (value.doubleValue() - min.doubleValue()) / (max.doubleValue() - min.doubleValue());
+        int filledRectangles = Math.max(0, Math.min(10, (int) Math.round(normalizedValue * 10)));
+        
+        // Update each rectangle (1-10)
+        for (int i = 1; i <= 10; i++) {
+            View rect = indicator.findViewById(getResourceId("rect_" + i + (indicator.getId() == R.id.rectangle_indicator_right ? "_right" : ""), "id"));
+            if (rect != null) {
+                if (i <= filledRectangles) {
+                    rect.setBackgroundResource(R.drawable.rectangle_indicator_filled);
+                } else {
+                    rect.setBackgroundResource(R.drawable.rectangle_indicator_empty);
+                }
+            }
+        }
+    }
+
     private void hideColumn(View view, boolean isLeft)
     {
         String suffix = isLeft ? "" : "_right";
@@ -287,12 +306,12 @@ class ObdItemAdapter extends ArrayAdapter<Object>
         TextView tvDescr = view.findViewById(getResourceId("obd_label" + suffix, "id"));
         TextView tvValue = view.findViewById(getResourceId("obd_value" + suffix, "id"));
         TextView tvUnits = view.findViewById(getResourceId("obd_units" + suffix, "id"));
-        ProgressBar pb = view.findViewById(getResourceId("bar" + suffix, "id"));
+        LinearLayout rectangleIndicator = view.findViewById(getResourceId("rectangle_indicator" + suffix, "id"));
 
         tvDescr.setVisibility(View.INVISIBLE);
         tvValue.setVisibility(View.INVISIBLE);
         tvUnits.setVisibility(View.INVISIBLE);
-        pb.setVisibility(View.INVISIBLE);
+        rectangleIndicator.setVisibility(View.INVISIBLE);
     }
 
     private int getResourceId(String name, String defType)

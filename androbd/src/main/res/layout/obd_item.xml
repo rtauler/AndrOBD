@@ -12,51 +12,134 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginEnd="4dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="start">
 
         <TextView
             android:id="@+id/obd_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black"
             android:maxLines="2"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:gravity="start" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/obd_units"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/obd_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <ImageView
-                android:id="@+id/obd_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:visibility="gone"
-                android:src="@android:drawable/ic_menu_slideshow" />
-
-        </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/bar"
-            style="?android:attr/progressBarStyleHorizontal"
+        <TextView
+            android:id="@+id/obd_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:gravity="start"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/obd_units"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:gravity="start" />
+
+        <ImageView
+            android:id="@+id/obd_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:visibility="gone"
-            android:max="100" />
+            android:src="@android:drawable/ic_menu_slideshow" />
+
+        <LinearLayout
+            android:id="@+id/rectangle_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:visibility="gone">
+
+            <View
+                android:id="@+id/rect_1"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_2"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_3"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_4"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_5"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_6"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_7"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_8"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_9"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_10"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -66,51 +149,134 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginStart="4dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="start">
 
         <TextView
             android:id="@+id/obd_label_right"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black"
             android:maxLines="2"
-            android:ellipsize="end" />
+            android:ellipsize="end"
+            android:gravity="start" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/obd_units_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/obd_value_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <ImageView
-                android:id="@+id/obd_icon_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:visibility="gone"
-                android:src="@android:drawable/ic_menu_slideshow" />
-
-        </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/bar_right"
-            style="?android:attr/progressBarStyleHorizontal"
+        <TextView
+            android:id="@+id/obd_value_right"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:gravity="start"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/obd_units_right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:gravity="start" />
+
+        <ImageView
+            android:id="@+id/obd_icon_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:visibility="gone"
-            android:max="100" />
+            android:src="@android:drawable/ic_menu_slideshow" />
+
+        <LinearLayout
+            android:id="@+id/rectangle_indicator_right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:visibility="gone">
+
+            <View
+                android:id="@+id/rect_1_right"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_2_right"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_3_right"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_4_right"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_5_right"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_6_right"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_7_right"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_8_right"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_9_right"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="2dp"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+            <View
+                android:id="@+id/rect_10_right"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle_indicator_empty" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
