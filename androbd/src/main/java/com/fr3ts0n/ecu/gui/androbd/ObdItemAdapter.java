@@ -174,24 +174,37 @@ class ObdItemAdapter extends ArrayAdapter<Object>
             convertView = mInflater.inflate(R.layout.obd_item, parent, false);
         }
 
-        // fill view fields with data
+        // Populate left column with current data
+        populateColumn(convertView, currPv, true);
 
-        // description text
-        TextView tvDescr = convertView.findViewById(R.id.obd_label);
-        tvDescr.setText(String.valueOf(currPv.get(EcuDataPv.FID_DESCRIPT)));
-        TextView tvValue = convertView.findViewById(R.id.obd_value);
-        TextView tvUnits = convertView.findViewById(R.id.obd_units);
-        ProgressBar pb = convertView.findViewById(R.id.bar);
+        // For now, populate right column with the same data (placeholder)
+        // In the future, this could be modified to show the next item
+        populateColumn(convertView, currPv, false);
+
+        return convertView;
+    }
+
+    private void populateColumn(View view, EcuDataPv pv, boolean isLeft)
+    {
+        String suffix = isLeft ? "" : "_right";
+        
+        // Description text
+        TextView tvDescr = view.findViewById(getResourceId("obd_label" + suffix, "id"));
+        tvDescr.setText(String.valueOf(pv.get(EcuDataPv.FID_DESCRIPT)));
+        
+        TextView tvValue = view.findViewById(getResourceId("obd_value" + suffix, "id"));
+        TextView tvUnits = view.findViewById(getResourceId("obd_units" + suffix, "id"));
+        ProgressBar pb = view.findViewById(getResourceId("bar" + suffix, "id"));
 
         // format value string
         String fmtText;
-        Object colVal = currPv.get(EcuDataPv.FID_VALUE);
-        Object cnvObj = currPv.get(EcuDataPv.FID_CNVID);
-        Number min = (Number) currPv.get(EcuDataPv.FID_MIN);
-        Number max = (Number) currPv.get(EcuDataPv.FID_MAX);
-        int pid = currPv.getAsInt(EcuDataPv.FID_PID);
+        Object colVal = pv.get(EcuDataPv.FID_VALUE);
+        Object cnvObj = pv.get(EcuDataPv.FID_CNVID);
+        Number min = (Number) pv.get(EcuDataPv.FID_MIN);
+        Number max = (Number) pv.get(EcuDataPv.FID_MAX);
+        int pid = pv.getAsInt(EcuDataPv.FID_PID);
         // Get display color ...
-        int pidColor = ColorAdapter.getItemColor(currPv);
+        int pidColor = ColorAdapter.getItemColor(pv);
 
         try
         {
@@ -200,12 +213,12 @@ class ObdItemAdapter extends ArrayAdapter<Object>
                 && ((Conversion[]) cnvObj)[EcuDataItem.cnvSystem] != null
             )
             {
-                // format throuch assigned conversion
+                // format through assigned conversion
                 Conversion cnv;
                 cnv = ((Conversion[]) cnvObj)[EcuDataItem.cnvSystem];
                 // set formatted text
                 fmtText = cnv.physToPhysFmtString((Number) colVal,
-                                                  (String) currPv.get(EcuDataPv.FID_FORMAT));
+                                                  (String) pv.get(EcuDataPv.FID_FORMAT));
             } else
             {
                 // plain format
@@ -229,11 +242,30 @@ class ObdItemAdapter extends ArrayAdapter<Object>
         {
             fmtText = String.valueOf(colVal);
         }
+        
         // set value
         tvValue.setText(fmtText);
-        tvUnits.setText(currPv.getUnits());
+        tvUnits.setText(pv.getUnits());
+    }
 
-        return convertView;
+    private void hideColumn(View view, boolean isLeft)
+    {
+        String suffix = isLeft ? "" : "_right";
+        
+        TextView tvDescr = view.findViewById(getResourceId("obd_label" + suffix, "id"));
+        TextView tvValue = view.findViewById(getResourceId("obd_value" + suffix, "id"));
+        TextView tvUnits = view.findViewById(getResourceId("obd_units" + suffix, "id"));
+        ProgressBar pb = view.findViewById(getResourceId("bar" + suffix, "id"));
+
+        tvDescr.setVisibility(View.INVISIBLE);
+        tvValue.setVisibility(View.INVISIBLE);
+        tvUnits.setVisibility(View.INVISIBLE);
+        pb.setVisibility(View.INVISIBLE);
+    }
+
+    private int getResourceId(String name, String defType)
+    {
+        return mInflater.getContext().getResources().getIdentifier(name, defType, mInflater.getContext().getPackageName());
     }
 
     /**
