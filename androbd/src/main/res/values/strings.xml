@@ -142,6 +142,27 @@ period of time while the ECU recalibrates itself.
     <string name="extension_files">Protocol customisation files (CSV)</string>
     <string name="conversions">Data Conversions</string>
     <string name="data_items">Data items</string>
+    <string name="data_items_manager">Data Items Manager</string>
+    <string name="standard_obd_pids">Standard OBD-II PIDs (SAE J1979)</string>
+    <string name="standard_obd_pids_description">These are the standard PIDs that are guaranteed to work in most OBD devices. Click the button below to auto-select only these standard PIDs.</string>
+    <string name="select_standard_pids">Select Standard OBD-II PIDs Only</string>
+    <string name="data_items_management">Data Items Management</string>
+    <string name="data_items_instructions">• Check/uncheck items to enable/disable them\n• Long press items to reorder them\n• Changes are saved when you tap Save</string>
+    <string name="reorder_item">Reorder Item</string>
+    <string name="move_to_top">Move to Top</string>
+    <string name="move_to_bottom">Move to Bottom</string>
+    <string name="move_up">Move Up</string>
+    <string name="move_down">Move Down</string>
+    <string name="confirm_save">Confirm Save</string>
+    <string name="save_configuration_message">Save configuration?\n\n• %1$d of %2$d data items enabled\n• Item order will be preserved\n• Previous settings will be overwritten</string>
+    <string name="select_all">Select All</string>
+    <string name="deselect_all">Deselect All</string>
+    <string name="all_data_items_selected">All data items selected</string>
+    <string name="all_data_items_deselected">All data items deselected</string>
+    <string name="standard_obd_pids_selected">Standard OBD-II PIDs selected</string>
+    <string name="settings_saved">Settings saved</string>
+    <string name="cancel">Cancel</string>
+
     <string name="select_extension">Select .csv extension file …</string>
     <string name="extension_loading">Customisation loading</string>
     <string name="check_cust_settings">Please check your customisation settings\n</string>

@@ -39,6 +39,7 @@ import com.fr3ts0n.ecu.prot.obd.ObdProt;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -140,8 +141,8 @@ public class SettingsActivity
 			setupElmCmdSelection();
             // set up ELM adaptive timing mode selection
 			setupElmTimingSelection();
-			// set up selectable PID list
-			setupPidSelection();
+					// set up data items manager preference
+		setupDataItemsManager();
 			// update network selection fields
 			updateNetworkSelections();
 			findPreference(KEY_BITCOIN).setOnPreferenceClickListener(this);
@@ -246,38 +247,34 @@ public class SettingsActivity
 			pref.setSummary(pref.getEntry());
 		}
 
-		/**
-		 * set up selection for PIDs
-		 */
-		void setupPidSelection()
-		{
-			MultiSelectListPreference itemList =
-				(MultiSelectListPreference) findPreference(KEY_DATA_ITEMS);
-
-			// collect data items for selection
-			items = ObdProt.dataItems.getSvcDataItems(ObdProt.OBD_SVC_DATA);
-			HashSet<String> selections = new HashSet<>();
-			CharSequence[] titles = new CharSequence[items.size()];
-			CharSequence[] keys = new CharSequence[items.size()];
-			// loop through data items
-			int i = 0;
-			for (EcuDataItem currItem : items)
-			{
-				titles[i] = currItem.label;
-				keys[i] = currItem.toString();
-				selections.add(currItem.toString());
-				i++;
-			}
-			// set enries and keys
-			itemList.setEntries(titles);
-			itemList.setEntryValues(keys);
-
-			// if there is no item selected, mark all as selected
-			if (itemList.getValues().size() == 0)
-			{
-				itemList.setValues(selections);
+			/**
+	 * set up data items manager preference
+	 */
+	void setupDataItemsManager()
+	{
+		Preference dataItemsPref = findPreference("data_items_manager");
+		dataItemsPref.setOnPreferenceClickListener(this);
+		
+		// Update summary to show current selection count
+		updateDataItemsSummary();
+	}
+	
+	/**
+	 * Update the summary to show how many data items are currently selected
+	 */
+	void updateDataItemsSummary()
+	{
+		Preference dataItemsPref = findPreference("data_items_manager");
+		if (dataItemsPref != null) {
+			Set<String> selectedItems = prefs.getStringSet(KEY_DATA_ITEMS, new HashSet<>());
+			int count = selectedItems.size();
+			if (count == 0) {
+				dataItemsPref.setSummary("No data items selected");
+			} else {
+				dataItemsPref.setSummary(count + " data items selected");
 			}
 		}
+	}
 
 		/**
 		 * set up preference text for extension files
@@ -338,6 +335,13 @@ public class SettingsActivity
 		@Override
 		public boolean onPreferenceClick(Preference preference)
 		{
+			if ("data_items_manager".equals(preference.getKey())) {
+				// Launch data items manager activity
+				Intent intent = new Intent(getActivity(), DataItemsManagerActivity.class);
+				startActivityForResult(intent, 1001); // Request code for data items manager
+				return true;
+			}
+			
 			Intent intent = preference.getIntent();
 			try
 			{
@@ -367,6 +371,15 @@ public class SettingsActivity
 		@Override
 		public void onActivityResult(int requestCode, int resultCode, Intent data)
 		{
+			if (requestCode == 1001) {
+				// Data items manager result
+				if (resultCode == Activity.RESULT_OK) {
+					// Update the summary to reflect changes
+					updateDataItemsSummary();
+				}
+				return;
+			}
+			
 			Preference pref;
 			SharedPreferences.Editor ed = prefs.edit();
 			String value = (resultCode == Activity.RESULT_OK) ? String.valueOf(data.getData()) : null;

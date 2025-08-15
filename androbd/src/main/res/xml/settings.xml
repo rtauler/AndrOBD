@@ -143,15 +143,11 @@
                 android:title="@string/select_protocol"
                 />
 
-            <MultiSelectListPreference
-                android:defaultValue="@array/empty"
-                android:dialogTitle="@string/items_for_display"
-                android:entries="@array/empty"
-                android:entryValues="@array/empty"
-                android:key="data_items"
-                android:summary="@string/items_for_display_descr"
+            <Preference
+                android:key="data_items_manager"
                 android:title="@string/items_for_display"
-                />
+                android:summary="@string/items_for_display_descr"
+                android:icon="@android:drawable/ic_menu_edit" />
 
         </PreferenceCategory>
 
