@@ -67,8 +67,8 @@ public class TidItemAdapter extends ObdItemAdapter
         tvValue.setVisibility(View.GONE);
 
         // set description
-        TextView tvUnits = convertView.findViewById(R.id.obd_units);
-        tvUnits.setText(String.valueOf(currPv.get(EcuDataPv.FID_DESCRIPT)));
+        TextView tvDescr = convertView.findViewById(R.id.obd_label);
+        tvDescr.setText(String.valueOf(currPv.get(EcuDataPv.FID_DESCRIPT)));
 
         return convertView;
     }

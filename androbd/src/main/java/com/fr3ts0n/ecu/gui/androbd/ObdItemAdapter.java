@@ -223,10 +223,14 @@ class ObdItemAdapter extends ArrayAdapter<Object>
         
         // Description text
         TextView tvDescr = view.findViewById(getResourceId("obd_label" + suffix, "id"));
-        tvDescr.setText(String.valueOf(pv.get(EcuDataPv.FID_DESCRIPT)));
+        String units = pv.getUnits();
+        String labelText = String.valueOf(pv.get(EcuDataPv.FID_DESCRIPT));
+        if (units != null && !units.isEmpty()) {
+            labelText += " (" + units + ")";
+        }
+        tvDescr.setText(labelText);
         
         TextView tvValue = view.findViewById(getResourceId("obd_value" + suffix, "id"));
-        TextView tvUnits = view.findViewById(getResourceId("obd_units" + suffix, "id"));
         LinearLayout rectangleIndicator = view.findViewById(getResourceId("rectangle_indicator" + suffix, "id"));
 
         // format value string
@@ -277,7 +281,6 @@ class ObdItemAdapter extends ArrayAdapter<Object>
         
         // set value
         tvValue.setText(fmtText);
-        tvUnits.setText(pv.getUnits());
     }
 
     private void updateRectangleIndicator(LinearLayout indicator, Number value, Number min, Number max)
@@ -305,12 +308,10 @@ class ObdItemAdapter extends ArrayAdapter<Object>
         
         TextView tvDescr = view.findViewById(getResourceId("obd_label" + suffix, "id"));
         TextView tvValue = view.findViewById(getResourceId("obd_value" + suffix, "id"));
-        TextView tvUnits = view.findViewById(getResourceId("obd_units" + suffix, "id"));
         LinearLayout rectangleIndicator = view.findViewById(getResourceId("rectangle_indicator" + suffix, "id"));
 
         tvDescr.setVisibility(View.INVISIBLE);
         tvValue.setVisibility(View.INVISIBLE);
-        tvUnits.setVisibility(View.INVISIBLE);
         rectangleIndicator.setVisibility(View.INVISIBLE);
     }
 

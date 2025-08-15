@@ -86,11 +86,11 @@ public class DfcItemAdapter extends ObdItemAdapter
 
 		ivIcon.setVisibility(View.VISIBLE);
 
-		TextView tvDescr = v.findViewById(R.id.obd_label);
-		TextView tvValue = v.findViewById(R.id.obd_units);
+		        TextView tvDescr = v.findViewById(R.id.obd_label);
+        TextView tvValue = v.findViewById(R.id.obd_value);
 
-		tvValue.setText(String.valueOf(Objects.requireNonNull(currPv).get(EcuCodeItem.FID_CODE)));
-		tvDescr.setText(String.valueOf(currPv.get(EcuCodeItem.FID_DESCRIPT)));
+        tvValue.setText(String.valueOf(Objects.requireNonNull(currPv).get(EcuCodeItem.FID_CODE)));
+        tvDescr.setText(String.valueOf(currPv.get(EcuCodeItem.FID_DESCRIPT)));
 
 		return v;
 	}
