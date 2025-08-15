@@ -49,21 +49,118 @@ public class DataItemsManagerActivity extends Activity {
     private DataItemsAdapter adapter;
     private SharedPreferences prefs;
     
-    // Standard OBD-II PIDs (SAE J1979) - most commonly supported
+    // Standard OBD-II PIDs (SAE J1979) mapped to actual mnemonics in the system
+    // This maps the standard PIDs to the actual mnemonics used in AndrOBD
     private static final String[] STANDARD_OBD_PIDS = {
-        "PID_00", "PID_01", "PID_02", "PID_03", "PID_04", "PID_05", "PID_06", "PID_07", "PID_08", "PID_09",
-        "PID_0A", "PID_0B", "PID_0C", "PID_0D", "PID_0E", "PID_0F", "PID_10", "PID_11", "PID_12", "PID_13",
-        "PID_14", "PID_15", "PID_16", "PID_17", "PID_18", "PID_19", "PID_1A", "PID_1B", "PID_1C", "PID_1D",
-        "PID_1E", "PID_1F", "PID_20", "PID_21", "PID_22", "PID_23", "PID_24", "PID_25", "PID_26", "PID_27",
-        "PID_28", "PID_29", "PID_2A", "PID_2B", "PID_2C", "PID_2D", "PID_2E", "PID_2F", "PID_30", "PID_31",
-        "PID_32", "PID_33", "PID_34", "PID_35", "PID_36", "PID_37", "PID_38", "PID_39", "PID_3A", "PID_3B",
-        "PID_3C", "PID_3D", "PID_3E", "PID_3F", "PID_40", "PID_41", "PID_42", "PID_43", "PID_44", "PID_45",
-        "PID_46", "PID_47", "PID_48", "PID_49", "PID_4A", "PID_4B", "PID_4C", "PID_4D", "PID_4E", "PID_4F",
-        "PID_50", "PID_51", "PID_52", "PID_53", "PID_54", "PID_55", "PID_56", "PID_57", "PID_58", "PID_59",
-        "PID_5A", "PID_5B", "PID_5C", "PID_5D", "PID_5E", "PID_60", "PID_61", "PID_62", "PID_63", "PID_64",
-        "PID_65", "PID_66", "PID_67", "PID_68", "PID_69", "PID_6A", "PID_6B", "PID_6C", "PID_6D", "PID_6E",
-        "PID_6F", "PID_70", "PID_71", "PID_72", "PID_73", "PID_74", "PID_75", "PID_76", "PID_77", "PID_78",
-        "PID_79", "PID_7A", "PID_7B", "PID_7C", "PID_7D", "PID_7E", "PID_7F"
+        // PID 00-0F: Basic engine data
+        "number_fault_codes",      // PID 01 - Number of Fault Codes
+        "status_mil",             // PID 01 - MIL status
+        "status_misfires",        // PID 01 - Misfire status
+        "status_fuel_system",     // PID 01 - Fuel system test status
+        "status_component_test",  // PID 01 - Component test status
+        "status_ignition_monitoring", // PID 01 - Ignition monitoring status
+        "status_catalyst_test",   // PID 01 - Catalyst test status
+        "status_catalyst_test_nox_monitor", // PID 01 - Heated Cat / Nox Monitor test status
+        "status_evaporative_system_test", // PID 01 - Evaporative system test status
+        "status_secondary_air_system_test", // PID 01 - Secondary air sys test status
+        "status_ac_refrigerant_test", // PID 01 - A/C refrigerant test status
+        "status_oxygen_sensor_test", // PID 01 - Oxygen Sensor test status
+        "status_oxygen_sensor_heater_test", // PID 01 - Oxygen Sensor Heater test status
+        "status_egr_system_test", // PID 01 - EGR System test status
+        "location_fault_code",    // PID 02 - DTC location
+        "status_fuel_system_1",  // PID 03 - Fuel System 1 Status
+        "status_fuel_system_2",  // PID 03 - Fuel System 2 Status
+        "engine_load_calculated", // PID 04 - Calculated Load Value
+        "engine_coolant_temperature", // PID 05 - Coolant Temperature
+        "fuel_trim_short_b1",    // PID 06 - Short Term Fuel Trim (Bank 1)
+        "fuel_trim_long_b1",     // PID 07 - Long Term Fuel Trim (Bank 1)
+        "fuel_trim_short_b2",    // PID 08 - Short Term Fuel Trim (Bank 2)
+        "fuel_trim_long_b2",     // PID 09 - Long Term Fuel Trim (Bank 2)
+        "fuel_pressure",         // PID 0A - Fuel Pressure (gauge)
+        "intake_manifold_pressure", // PID 0B - Intake Manifold Pressure
+        "engine_speed",          // PID 0C - Engine RPM
+        "vehicle_speed",         // PID 0D - Vehicle Speed
+        "ignition_timing_advance_cyl1", // PID 0E - Timing Advance (Cyl. #1)
+        "intake_air_temperature", // PID 0F - Intake Air Temperature
+        "mass_airflow",          // PID 10 - Air Flow Rate (MAF sensor)
+        "throttle_position_abs", // PID 11 - Absolute Throttle Position
+        "status_secondary_air_system", // PID 12 - Secondary air status
+        "number_oxygen_sensors", // PID 13 - Oxygen sensors present
+        
+        // PID 14-1B: O2 Sensor voltages and fuel trims (Bank 1-4)
+        "o2_sensor_voltage_b1s1", // PID 14 - O2 Sensor B1S1
+        "o2_sensor_fuel_trim_b1s1", // PID 14 - O2 Sensor fuel trim B1S1
+        "o2_sensor_voltage_b1s2", // PID 15 - O2 Sensor B1S2
+        "o2_sensor_fuel_trim_b1s2", // PID 15 - O2 Sensor fuel trim B1S2
+        "o2_sensor_voltage_b1s3", // PID 16 - O2 Sensor B1S3
+        "o2_sensor_fuel_trim_b1s3", // PID 16 - O2 Sensor fuel trim B1S3
+        "o2_sensor_voltage_b1s4", // PID 17 - O2 Sensor B1S4
+        "o2_sensor_fuel_trim_b1s4", // PID 17 - O2 Sensor fuel trim B1S4
+        "o2_sensor_voltage_b2s1", // PID 18 - O2 Sensor B2S1
+        "o2_sensor_fuel_trim_b2s1", // PID 18 - O2 Sensor fuel trim B2S1
+        "o2_sensor_voltage_b2s2", // PID 19 - O2 Sensor B2S2
+        "o2_sensor_fuel_trim_b2s2", // PID 19 - O2 Sensor fuel trim B2S2
+        "o2_sensor_voltage_b2s3", // PID 1A - O2 Sensor B2S3
+        "o2_sensor_fuel_trim_b2s3", // PID 1A - O2 Sensor fuel trim B2S3
+        "o2_sensor_voltage_b2s4", // PID 1B - O2 Sensor B2S4
+        "o2_sensor_fuel_trim_b2s4", // PID 1B - O2 Sensor fuel trim B2S4
+        
+        // PID 1C-1F: Additional engine data
+        "obd_type",              // PID 1C - OBD conforms to
+        "map_oxygen_sensors_present", // PID 1D - Oxygen sensors present
+        "status_power_take_off", // PID 1E - Power Take-Off Status
+        "running_time",          // PID 1F - Time Since Engine Start
+        
+        // PID 21-2F: Extended engine data
+        "distance_sine_mil_active", // PID 21 - Distance since MIL activated
+        "fuel_pressure_rel",     // PID 22 - Fuel Rail Pressure (rel. to manifold vacuum)
+        "fuel_pressure_wr",      // PID 23 - Fuel Pressure (gauge) wide range
+        "o2_wr_lambda_b1s1",    // PID 24 - O2 Sensor B1S1 lambda (Bank 1 WR)
+        "o2_wr_voltage_b1s1",   // PID 24 - O2 Sensor B1S1 (Bank 1 WR)
+        "o2_wr_lambda_b1s2",    // PID 25 - O2 Sensor B1S2 lambda (Bank 1 WR)
+        "o2_wr_voltage_b1s2",   // PID 25 - O2 Sensor B1S2 (Bank 1 WR)
+        "o2_wr_lambda_b1s3",    // PID 26 - O2 Sensor B1S3 lambda (Bank 1 WR)
+        "o2_wr_voltage_b1s3",   // PID 26 - O2 Sensor B1S3 (Bank 1 WR)
+        "o2_wr_lambda_b1s4",    // PID 27 - O2 Sensor B1S4 lambda (Bank 1 WR)
+        "o2_wr_voltage_b1s4",   // PID 27 - O2 Sensor B1S4 (Bank 1 WR)
+        "o2_wr_lambda_b2s1",    // PID 28 - O2 Sensor B2S1 lambda (Bank 2 WR)
+        "o2_wr_voltage_b2s1",   // PID 28 - O2 Sensor B2S1 (Bank 2 WR)
+        "o2_wr_lambda_b2s2",    // PID 29 - O2 Sensor B2S2 lambda (Bank 2 WR)
+        "o2_wr_voltage_b2s2",   // PID 29 - O2 Sensor B2S2 (Bank 2 WR)
+        "o2_wr_lambda_b2s3",    // PID 2A - O2 Sensor B2S3 lambda (Bank 2 WR)
+        "o2_wr_voltage_b2s3",   // PID 2A - O2 Sensor B2S3 (Bank 2 WR)
+        "o2_wr_lambda_b2s4",    // PID 2B - O2 Sensor B2S4 lambda (Bank 2 WR)
+        "o2_wr_voltage_b2s4",   // PID 2B - O2 Sensor B2S4 (Bank 2 WR)
+        "egr_ratio_commanded",  // PID 2C - Commanded EGR
+        "egr_error",            // PID 2D - EGR Error
+        "evaporative_purge_ratio", // PID 2E - Commanded Evaporative Purge
+        "fuel_level",           // PID 2F - Fuel Level Input
+        
+        // PID 30-3F: Additional engine parameters
+        "counts_warmups_since_ecu_reset", // PID 30 - Warm-ups since ECU reset
+        "distance_since_ecu_reset", // PID 31 - Distance since ECU reset
+        "pressure_vapor_evaporative_purge", // PID 32 - Evap System Vapor Pressure
+        "barometric_pressure",  // PID 33 - Barometric Pressure (absolute)
+        "o2_wr_lambda_s1",     // PID 34 - O2 Sensor 1 lambda (Bank 1 WR)
+        "o2_wr_current_s1",    // PID 34 - O2 Sensor 1 current (Bank 1 WR)
+        "o2_wr_lambda_s2",     // PID 35 - O2 Sensor 2 lambda (Bank 1 WR)
+        "o2_wr_current_s2",    // PID 35 - O2 Sensor 2 current (Bank 1 WR)
+        "o2_wr_lambda_s3",     // PID 36 - O2 Sensor 3 lambda (Bank 1 WR)
+        "o2_wr_current_s3",    // PID 36 - O2 Sensor 3 current (Bank 1 WR)
+        "o2_wr_lambda_s4",     // PID 37 - O2 Sensor 4 lambda (Bank 1 WR)
+        "o2_wr_current_s4",    // PID 37 - O2 Sensor 4 current (Bank 1 WR)
+        "o2_wr_lambda_s5",     // PID 38 - O2 Sensor 5 lambda (Bank 2 WR)
+        "o2_wr_current_s5",    // PID 38 - O2 Sensor 5 current (Bank 2 WR)
+        "o2_wr_lambda_s6",     // PID 39 - O2 Sensor 6 lambda (Bank 2 WR)
+        "o2_wr_current_s6",    // PID 39 - O2 Sensor 6 current (Bank 2 WR)
+        "o2_wr_lambda_s7",     // PID 3A - O2 Sensor 7 lambda (Bank 2 WR)
+        "o2_wr_current_s7",    // PID 3A - O2 Sensor 7 current (Bank 2 WR)
+        "o2_wr_lambda_s8",     // PID 3B - O2 Sensor 8 lambda (Bank 2 WR)
+        "o2_wr_current_s8",    // PID 3B - O2 Sensor 8 current (Bank 2 WR)
+        "cat_temperature_b1s1", // PID 3C - CAT Temperature B1S1
+        "cat_temperature_b2s1", // PID 3D - CAT Temperature B2S1
+        "cat_temperature_b1s2", // PID 3E - CAT Temperature B1S2
+        "cat_temperature_b2s2"  // PID 3F - CAT Temperature B2S2
     };
     
     @Override
@@ -163,11 +260,13 @@ public class DataItemsManagerActivity extends Activity {
         
         // Enable only standard OBD-II PIDs
         for (EcuDataItem item : orderedItems) {
-            String itemId = item.toString();
-            for (String standardPid : STANDARD_OBD_PIDS) {
-                if (itemId.equals(standardPid)) {
-                    itemEnabledState.put(itemId, true);
-                    break;
+            String itemMnemonic = (String) item.pv.get(EcuDataPv.FID_MNEMONIC);
+            if (itemMnemonic != null) {
+                for (String standardPid : STANDARD_OBD_PIDS) {
+                    if (itemMnemonic.equals(standardPid)) {
+                        itemEnabledState.put(item.toString(), true);
+                        break;
+                    }
                 }
             }
         }
