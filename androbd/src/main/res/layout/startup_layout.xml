@@ -61,6 +61,17 @@
             android:text="@string/translation_credits"
             android:textAppearance="@android:style/TextAppearance.Small"
             />
+
+        <Button
+            android:id="@+id/btn_clear_fault_codes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@android:color/holo_red_light"
+            android:text="@string/obd_clearcodes"
+            android:textColor="@android:color/white"
+            android:onClick="clearFaultCodesClicked"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <ListView

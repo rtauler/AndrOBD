@@ -1463,6 +1463,16 @@ public class MainActivity extends PluginManager
     }
 
     /**
+     * OnClick handler - Clear fault codes button
+     *
+     * @param view view source of click event
+     */
+    public void clearFaultCodesClicked(View view)
+    {
+        clearObdFaultCodesDirect();
+    }
+
+    /**
      * Unhide action bar
      */
     private void unHideActionBar()
@@ -2260,6 +2270,18 @@ public class MainActivity extends PluginManager
                         })
                 .setNegativeButton(android.R.string.no, null)
                 .show();
+    }
+
+    /**
+     * clear OBD fault codes without confirmation dialog
+     * called directly from button click
+     */
+    private void clearObdFaultCodesDirect()
+    {
+        // set service CLEAR_CODES to clear the codes
+        CommService.elm.setService(ObdProt.OBD_SVC_CLEAR_CODES);
+        // set service READ_CODES to re-read the codes
+        CommService.elm.setService(ObdProt.OBD_SVC_READ_CODES);
     }
 
     /**
