@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.util.Log;
 import android.widget.Toast;
 import android.app.AlertDialog;
 
@@ -38,6 +39,7 @@ public class DataItemsManagerActivity extends Activity {
     
     private ListView listView;
     private Button btnStandardPids;
+    private Button btnKtmHusqvarna;
     private Button btnSelectAll;
     private Button btnDeselectAll;
     private Button btnSave;
@@ -163,6 +165,71 @@ public class DataItemsManagerActivity extends Activity {
         "cat_temperature_b2s2"  // PID 3F - CAT Temperature B2S2
     };
     
+    // KTM/Husqvarna motorcycle-specific PIDs (Mode 01) - commonly supported
+    private static final String[] KTM_HUSQVARNA_PIDS = {
+        // PID 01: Monitor status since DTCs cleared
+        "status_mil",             // PID 01 - MIL status
+        "status_misfires",        // PID 01 - Misfire status
+        "status_fuel_system",     // PID 01 - Fuel system test status
+        "status_component_test",  // PID 01 - Component test status
+        "status_ignition_monitoring", // PID 01 - Ignition monitoring status
+        "status_catalyst_test",   // PID 01 - Catalyst test status
+        "status_evaporative_system_test", // PID 01 - Evaporative system test status
+        "status_secondary_air_system_test", // PID 01 - Secondary air sys test status
+        "status_ac_refrigerant_test", // PID 01 - A/C refrigerant test status
+        "status_oxygen_sensor_test", // PID 01 - Oxygen Sensor test status
+        "status_oxygen_sensor_heater_test", // PID 01 - Oxygen Sensor Heater test status
+        "status_egr_system_test", // PID 01 - EGR System test status
+        
+        // PID 03: Fuel system status
+        "status_fuel_system_1",  // PID 03 - Fuel System 1 Status
+        "status_fuel_system_2",  // PID 03 - Fuel System 2 Status
+        
+        // PID 04-0F: Basic engine data
+        "engine_load_calculated", // PID 04 - Calculated Load Value
+        "engine_coolant_temperature", // PID 05 - Coolant Temperature
+        "intake_manifold_pressure", // PID 0B - Intake Manifold Pressure
+        "engine_speed",          // PID 0C - Engine RPM
+        "vehicle_speed",         // PID 0D - Vehicle Speed
+        "ignition_timing_advance_cyl1", // PID 0E - Timing Advance (Cyl. #1)
+        "intake_air_temperature", // PID 0F - Intake Air Temperature
+        "mass_airflow",          // PID 10 - Air Flow Rate (MAF sensor)
+        "throttle_position_abs", // PID 11 - Absolute Throttle Position
+        
+        // PID 1F: Run time since engine start
+        "running_time",          // PID 1F - Time Since Engine Start
+        
+        // PID 21: Distance traveled with MIL on
+        "distance_sine_mil_active", // PID 21 - Distance since MIL activated
+        
+        // PID 2F: Fuel tank level input
+        "fuel_level",           // PID 2F - Fuel Level Input
+        
+        // PID 31: Distance traveled since codes cleared
+        "distance_since_ecu_reset", // PID 31 - Distance since ECU reset
+        
+        // PID 33: Barometric pressure
+        "barometric_pressure",  // PID 33 - Barometric Pressure (absolute)
+        
+        // PID 42-4C: Additional engine parameters
+        "control_module_voltage", // PID 42 - Control module voltage (if available)
+        "absolute_load_value",  // PID 43 - Absolute load value (if available)
+        "commanded_equivalence_ratio", // PID 44 - Commanded equivalence ratio (if available)
+        "relative_throttle_position", // PID 45 - Relative throttle position (if available)
+        "ambient_air_temperature", // PID 46 - Ambient air temperature (if available)
+        "absolute_throttle_position_b", // PID 47 - Absolute throttle position B (if available)
+        "accelerator_pedal_position_d", // PID 49 - Accelerator pedal position D (if available)
+        "accelerator_pedal_position_e", // PID 4A - Accelerator pedal position E (if available)
+        "commanded_throttle_actuator", // PID 4C - Commanded throttle actuator (if available)
+        
+        // PID 50-5D: Fuel and engine data
+        "fuel_type",            // PID 50 - Fuel type (if available)
+        "ethanol_fuel_percent", // PID 51 - Ethanol fuel % (if available)
+        "engine_oil_temperature", // PID 5B - Engine oil temperature (if available)
+        "fuel_injection_timing", // PID 5C - Fuel injection timing (if available)
+        "engine_fuel_rate"      // PID 5D - Engine fuel rate (if available)
+    };
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,6 +240,7 @@ public class DataItemsManagerActivity extends Activity {
         // Initialize views
         listView = findViewById(R.id.list_data_items);
         btnStandardPids = findViewById(R.id.btn_standard_pids);
+        btnKtmHusqvarna = findViewById(R.id.btn_ktm_husqvarna);
         btnSelectAll = findViewById(R.id.btn_select_all);
         btnDeselectAll = findViewById(R.id.btn_deselect_all);
         btnSave = findViewById(R.id.btn_save);
@@ -190,6 +258,7 @@ public class DataItemsManagerActivity extends Activity {
         
         // Set up button click listeners
         btnStandardPids.setOnClickListener(v -> selectStandardPids());
+        btnKtmHusqvarna.setOnClickListener(v -> selectKtmHusqvarnaPids());
         btnSelectAll.setOnClickListener(v -> selectAll());
         btnDeselectAll.setOnClickListener(v -> deselectAll());
         btnSave.setOnClickListener(v -> showSaveConfirmation());
@@ -200,8 +269,14 @@ public class DataItemsManagerActivity extends Activity {
         
         // Set up long press to show reorder options
         listView.setOnItemLongClickListener((parent, view, position, id) -> {
+            Log.d("DataItemsManager", "Long press detected at position: " + position);
             showReorderDialog(position);
             return true;
+        });
+        
+        // Also add click listener for debugging
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Log.d("DataItemsManager", "Item clicked at position: " + position);
         });
     }
     
@@ -276,6 +351,30 @@ public class DataItemsManagerActivity extends Activity {
         Toast.makeText(this, getString(R.string.standard_obd_pids_selected), Toast.LENGTH_SHORT).show();
     }
     
+    private void selectKtmHusqvarnaPids() {
+        // Clear current selection
+        for (EcuDataItem item : orderedItems) {
+            itemEnabledState.put(item.toString(), false);
+        }
+        
+        // Enable only KTM/Husqvarna-specific PIDs
+        for (EcuDataItem item : orderedItems) {
+            String itemMnemonic = (String) item.pv.get(EcuDataPv.FID_MNEMONIC);
+            if (itemMnemonic != null) {
+                for (String ktmPid : KTM_HUSQVARNA_PIDS) {
+                    if (itemMnemonic.equals(ktmPid)) {
+                        itemEnabledState.put(item.toString(), true);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        adapter.notifyDataSetChanged();
+        updateTitle();
+        Toast.makeText(this, getString(R.string.ktm_husqvarna_pids_selected), Toast.LENGTH_SHORT).show();
+    }
+    
     private void selectAll() {
         for (EcuDataItem item : orderedItems) {
             itemEnabledState.put(item.toString(), true);
@@ -302,37 +401,101 @@ public class DataItemsManagerActivity extends Activity {
         setTitle(getString(R.string.data_items_manager) + " (" + enabledCount + "/" + orderedItems.size() + ")");
     }
     
+    private void moveItem(int fromPosition, int toPosition) {
+        if (fromPosition < 0 || fromPosition >= orderedItems.size() || 
+            toPosition < 0 || toPosition >= orderedItems.size()) {
+            return;
+        }
+        
+        EcuDataItem item = orderedItems.get(fromPosition);
+        String itemName = item.label != null ? item.label : item.toString();
+        
+        // Remove item from current position and add to new position
+        orderedItems.remove(fromPosition);
+        orderedItems.add(toPosition, item);
+        
+        // Update the adapter and scroll to the new position
+        adapter.notifyDataSetChanged();
+        updateTitle();
+        
+        // Scroll to the new position to show the user where the item moved
+        listView.setSelection(toPosition);
+        
+        // Show a toast message confirming the move
+        String action = fromPosition > toPosition ? "moved up" : "moved down";
+        Toast.makeText(this, itemName + " " + action, Toast.LENGTH_SHORT).show();
+        
+        Log.d("DataItemsManager", "Moved item from position " + fromPosition + " to " + toPosition);
+    }
+    
     private void showReorderDialog(int position) {
+        EcuDataItem item = orderedItems.get(position);
+        String itemName = item.label != null ? item.label : item.toString();
+        
+        Log.d("DataItemsManager", "Showing reorder dialog for item: " + itemName + " at position: " + position);
+        
         String[] options = {getString(R.string.move_to_top), getString(R.string.move_to_bottom), getString(R.string.move_up), getString(R.string.move_down)};
+        
+        // Disable options that don't make sense
+        boolean[] enabledOptions = new boolean[4];
+        enabledOptions[0] = true;  // Move to Top - always enabled
+        enabledOptions[1] = true;  // Move to Bottom - always enabled
+        enabledOptions[2] = position > 0;  // Move Up - only if not at top
+        enabledOptions[3] = position < orderedItems.size() - 1;  // Move Down - only if not at bottom
+        
         new AlertDialog.Builder(this)
-            .setTitle(getString(R.string.reorder_item))
+            .setTitle(getString(R.string.reorder_item) + ": " + itemName)
             .setItems(options, (dialog, which) -> {
-                EcuDataItem item = orderedItems.get(position);
+                Log.d("DataItemsManager", "User selected option: " + which + " for item at position: " + position);
+                
+                EcuDataItem itemToMove = orderedItems.get(position);
+                int newPosition = position;
+                
                 switch (which) {
                     case 0: // Move to Top
                         orderedItems.remove(position);
-                        orderedItems.add(0, item);
+                        orderedItems.add(0, itemToMove);
+                        newPosition = 0;
                         break;
                     case 1: // Move to Bottom
                         orderedItems.remove(position);
-                        orderedItems.add(item);
+                        orderedItems.add(itemToMove);
+                        newPosition = orderedItems.size() - 1;
                         break;
                     case 2: // Move Up
                         if (position > 0) {
                             orderedItems.remove(position);
-                            orderedItems.add(position - 1, item);
+                            orderedItems.add(position - 1, itemToMove);
+                            newPosition = position - 1;
                         }
                         break;
                     case 3: // Move Down
                         if (position < orderedItems.size() - 1) {
                             orderedItems.remove(position);
-                            orderedItems.add(position + 1, item);
+                            orderedItems.add(position + 1, itemToMove);
+                            newPosition = position + 1;
                         }
                         break;
                 }
+                
+                // Update the adapter and scroll to the new position
                 adapter.notifyDataSetChanged();
                 updateTitle();
+                
+                // Scroll to the new position to show the user where the item moved
+                listView.setSelection(newPosition);
+                
+                // Show a toast message confirming the move
+                String action = "";
+                switch (which) {
+                    case 0: action = "moved to top"; break;
+                    case 1: action = "moved to bottom"; break;
+                    case 2: action = "moved up"; break;
+                    case 3: action = "moved down"; break;
+                }
+                Toast.makeText(this, itemName + " " + action, Toast.LENGTH_SHORT).show();
             })
+            .setNegativeButton(getString(R.string.cancel), null)
             .show();
     }
     
@@ -410,6 +573,27 @@ public class DataItemsManagerActivity extends Activity {
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 itemEnabledState.put(item.toString(), isChecked);
                 updateTitle();
+            });
+            
+            // Set up reorder buttons
+            Button btnMoveUp = convertView.findViewById(R.id.btn_move_up);
+            Button btnMoveDown = convertView.findViewById(R.id.btn_move_down);
+            
+            // Disable up button if at top, disable down button if at bottom
+            btnMoveUp.setEnabled(position > 0);
+            btnMoveDown.setEnabled(position < orderedItems.size() - 1);
+            
+            // Set button click listeners
+            btnMoveUp.setOnClickListener(v -> {
+                if (position > 0) {
+                    moveItem(position, position - 1);
+                }
+            });
+            
+            btnMoveDown.setOnClickListener(v -> {
+                if (position < orderedItems.size() - 1) {
+                    moveItem(position, position + 1);
+                }
             });
             
             return convertView;

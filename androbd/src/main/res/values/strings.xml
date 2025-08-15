@@ -146,8 +146,10 @@ period of time while the ECU recalibrates itself.
     <string name="standard_obd_pids">Standard OBD-II PIDs (SAE J1979)</string>
     <string name="standard_obd_pids_description">These are the standard PIDs that are guaranteed to work in most OBD devices. Click the button below to auto-select only these standard PIDs.</string>
     <string name="select_standard_pids">Select Standard OBD-II PIDs Only</string>
+    <string name="select_ktm_husqvarna">Select KTM/Husqvarna PIDs</string>
     <string name="data_items_management">Data Items Management</string>
-    <string name="data_items_instructions">• Check/uncheck items to enable/disable them\n• Long press items to reorder them\n• Changes are saved when you tap Save</string>
+    <string name="data_items_instructions">• Check/uncheck items to enable/disable them\n• Changes are saved when you tap Save</string>
+    <string name="reorder_instructions">💡 To reorder items: Use the ↑ and ↓ buttons on the right side of each item</string>
     <string name="reorder_item">Reorder Item</string>
     <string name="move_to_top">Move to Top</string>
     <string name="move_to_bottom">Move to Bottom</string>
@@ -160,6 +162,7 @@ period of time while the ECU recalibrates itself.
     <string name="all_data_items_selected">All data items selected</string>
     <string name="all_data_items_deselected">All data items deselected</string>
     <string name="standard_obd_pids_selected">Standard OBD-II PIDs selected</string>
+    <string name="ktm_husqvarna_pids_selected">KTM/Husqvarna PIDs selected</string>
     <string name="settings_saved">Settings saved</string>
     <string name="cancel">Cancel</string>
 
