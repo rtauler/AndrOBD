@@ -166,8 +166,18 @@ class ObdItemAdapter extends ArrayAdapter<Object>
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        // get data PV
-        EcuDataPv currPv = (EcuDataPv) getItem(position);
+        // Calculate actual item positions since each row shows 2 items
+        int leftItemPosition = position * 2;
+        int rightItemPosition = leftItemPosition + 1;
+        
+        // get data PV for left column
+        EcuDataPv leftPv = (EcuDataPv) super.getItem(leftItemPosition);
+        
+        // get data PV for right column (next position if available)
+        EcuDataPv rightPv = null;
+        if (rightItemPosition < super.getCount()) {
+            rightPv = (EcuDataPv) super.getItem(rightItemPosition);
+        }
 
         if (convertView == null)
         {
@@ -175,13 +185,35 @@ class ObdItemAdapter extends ArrayAdapter<Object>
         }
 
         // Populate left column with current data
-        populateColumn(convertView, currPv, true);
+        populateColumn(convertView, leftPv, true);
 
-        // For now, populate right column with the same data (placeholder)
-        // In the future, this could be modified to show the next item
-        populateColumn(convertView, currPv, false);
+        // Populate right column with next item if available
+        if (rightPv != null) {
+            populateColumn(convertView, rightPv, false);
+        } else {
+            // Hide right column if no next item
+            hideColumn(convertView, false);
+        }
 
         return convertView;
+    }
+
+    @Override
+    public int getCount()
+    {
+        int totalItems = super.getCount();
+        // Each row shows 2 items, so return half the total items
+        // Add 1 if there's an odd number of items to handle the last row
+        return (totalItems + 1) / 2;
+    }
+
+    @Override
+    public Object getItem(int position)
+    {
+        // Since each row shows 2 items, we need to calculate the actual item position
+        // For the left column, use the row position directly
+        // For the right column, use row position + 1
+        return super.getItem(position);
     }
 
     private void populateColumn(View view, EcuDataPv pv, boolean isLeft)
