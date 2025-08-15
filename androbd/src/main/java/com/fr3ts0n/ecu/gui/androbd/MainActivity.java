@@ -1498,14 +1498,6 @@ public class MainActivity extends PluginManager
 
     private void setNumCodes(int newNumCodes)
     {
-        // set list background based on MIL status
-        View list = findViewById(R.id.obd_list);
-        if (list != null)
-        {
-            list.setBackgroundResource((newNumCodes & 0x80) != 0
-                    ? R.drawable.mil_on
-                    : R.drawable.mil_off);
-        }
         // enable / disable freeze frames based on number of codes
         setMenuItemEnable(R.id.service_freezeframes, (newNumCodes != 0));
     }
